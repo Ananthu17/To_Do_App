@@ -1,0 +1,135 @@
+<div>
+  <div class="landing-wrapper">
+    <div class="logo">
+        <div class="container-fluid d-flex" style="align-items: center;">
+        </div>
+    </div>
+  </div>
+<div class="background">
+    <div class="container">
+        <div class="card shadow" style="z-index: 3;height: 800px;display: flex;">
+          <div class="todo-title shadow">
+              <span>TO DO LIST <i class="fa fa-solid fa-check-double"></i></span>
+              <button class="btn btn-sm btn-light" (click)=logout()><i class="fas fa-power-off"></i></button>
+          </div>
+          <div class="row">
+            <div class="todo-body col-md-7">
+              <table class="table table-hover" id="myTable">
+                <thead>
+                  <tr>
+                    <th class="font-weight-bold text-danger">#</th>
+                    <th>Tasks</th>
+                    <th>Priority</th>
+                    <th class="text-success">Done</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of task_list; let i = index">
+                    <div *ngIf="data.isCompleted;then content else other_content">
+                    </div>
+                    <ng-template #content>
+                      <td>{{i+1 }}.</td>
+                      <td class="text-success font-weight-bold" data-toggle="modal" [attr.data-target]="'#'+data._id">{{data["name"]}}</td>
+                      <td class="text-danger font-weight-bold">{{data["level_of_priority"]}}</td>
+                      <td><input type="checkbox" class=" ml-4" checked></td>
+                    </ng-template>
+                    <ng-template #other_content>
+                      <td class="bg-grey">{{i+1 }}.</td>
+                      <td class="bg-grey text-secondary font-weight-bold" data-toggle="modal" [attr.data-target]="'#'+data._id">{{data["name"]}}</td>
+                      <td class="text-danger bg-grey font-weight-bold">{{data["level_of_priority"]}}</td>
+                      <td class="bg-grey"><input type="checkbox" class=" ml-4" (click)=showCheck(data._id)></td>
+                    </ng-template>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-5 p-4">
+              <div class="shadow">
+                <div class="card-header text-success font-weight-bold">
+                  Add New Task &nbsp; <i class="fas fa-plus"></i>
+                </div>
+                <div class="card-body">
+                  <form method="post" class="form" #taskForm="ngForm" (ngSubmit)="onTask(taskForm.value)">
+                    <label for="user-email" style="padding-top:13px">
+                        &nbsp;Name
+                      </label>
+                    <input id="taskname" placeholder="Task name.." class="form-content form-control" type="text" #name="ngModel" name="name" autocomplete="on" ngModel required />
+                    <div class="form-border"></div>
+                    <div class="form-border"></div>
+                    <label for="user-password" style="padding-top:22px">&nbsp;Priority</label>
+                    <input id="user-password" class="form-content form-control" type="number" placeholder="Type priority out of five" min=1 max=5 #level_of_priority="ngModel" name="level_of_priority" ngModel required />
+
+                    <label for="user-password" style="padding-top:22px">&nbsp;Completion Date</label>
+                    <input id="user-email" class="form-content form-control" type="date" #completionDate="ngModel" name="completionDate" autocomplete="on" ngModel required />
+
+                    <label for="user-password" style="padding-top:22px">&nbsp;Members : </label>
+                    <select name="members" id="members" #members="ngModel"  class="selectpicker ml-2" multiple data-live-search="true" multiple ngModel required>
+                        <option value="{{data._id}}" *ngFor="let data of members_list; let i = index">{{data.username}}</option>
+                    </select>
+                  <div class="form-border"></div>
+                  <input id="submit-btn" type="submit"  class="btn btn-success btn-sm btn-block mt-3" name="submit" value="Add Task" />
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngFor="let data of task_list; let i = index">
+          <!-- Modal -->
+          <div class="modal fade" id="{{data._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content shadow">
+                <div class="modal-header">
+                  <h5 class="text-secondary font-weight-bold">Task Details</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body d-flex flex-column">
+                  <div>
+                    <label for="" class="font-weight-bold"> Task Name :</label>
+                    <span class="text-info"> {{data["name"]}}</span>
+                  </div>
+                  <div>
+                    <label for="" class="font-weight-bold"> Priority :</label>
+                    <span class="text-info"> {{data["level_of_priority"]}}</span>
+                  </div>
+                  <div>
+                    <label for="" class="font-weight-bold"> Completion Date :</label>
+                    <span class="text-info"> {{data["completionDate"]}}</span>
+                  </div>
+                  <div>
+                    <label for="" class="font-weight-bold"> Members Associated :</label>
+                    <span class="text-info"> [ {{data["members"]}} ]</span>
+                  </div>
+                  <div>
+                  <div *ngIf="data.isCompleted;then content else other_content">
+                  </div>
+                  <ng-template #content>
+                    <h4 class="text-success">Done</h4>
+                  </ng-template>
+                  <ng-template #other_content>
+                    <h4 class="text-danger">Pending</h4>
+                  </ng-template>
+                  </div>
+                </div>
+                <div class="modal-footer">
+
+                  <form method="post" class="form" #memForm="ngForm" (ngSubmit)="onMemberAdd(memForm.value)">
+                    <span class="text-dark mb-2" style="font-size: 12px;">Write this "{{data._id}}" Task Id to proceed</span>
+                    <input type="text" #id="ngModel" name="id" class="form-control mb-2" ngModel required>
+                    <select name="members" #members="ngModel" class="selectpicker ml-2" multiple data-live-search="true" multiple ngModel required>
+                      <option value="{{data._id}}" *ngFor="let data of members_list; let i = index">{{data.username}}</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm width-lg btn-success ml-2">Assign Others</button>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+</div>

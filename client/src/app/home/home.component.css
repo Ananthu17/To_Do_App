@@ -1,0 +1,98 @@
+.landing-wrapper{
+    background-color: #00bfa5;
+    height: 222px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+.background{
+    display: flex;
+    justify-content: center;
+    background-color: rgb(201, 201, 200);
+    height:100vh;
+    top:120px;
+    position: relative;
+}
+.logo{
+    position: relative;
+    top: 100px;
+}
+.logo-text{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+  .todo-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    font-size: 20px;
+    color: #03b69e;
+    font-weight: bold;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .todo-body{
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+  }
+  .todo-body div{
+    padding: 1rem;
+    color: green;
+    font-weight: bold;
+  }
+  .font-bg{
+    font-size: 30px !important;
+  }
+
+tbody {
+    display: block;
+    height: 600px;
+    overflow: auto;
+}
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+table {
+    width: 100%;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.bg-grey{
+  background: gainsboro !important;
+}
+.modal-footer{
+  justify-content: center !important;
+}
+
+
+
