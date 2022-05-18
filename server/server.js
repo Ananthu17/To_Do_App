@@ -177,7 +177,10 @@ app.post('/api/task_update',async(req,res)=>{
               return next(new Error('Could not load Task'));
             else {
               p.isCompleted = isCompleted;
-              p.members.push(members)
+
+			  if (!p.members.includes(members)){
+				p.members.push(members)
+			  }
 
               p.save(function(err) {
                 if (err){
