@@ -139,22 +139,22 @@ app.get('/api/tasks',async(req,res)=>{
 
 // create task
 app.post('/api/create_task',async(req,res)=>{
-    const { name, level_of_priority, isCompleted, members  } = req.body
+    const { name, level_of_priority, isCompleted, created_by  } = req.body
     if (!name || typeof name !== 'string') {
 		return res.json({ status: 'error', error: 'Invalid name' })
 	}
     if (!level_of_priority || typeof level_of_priority !== 'number') {
 		return res.json({ status: 'error', error: 'Invalid priority' })
 	}
-    if (mongoose.Types.ObjectId.isValid(members[0]) === false){
-        return res.json({ status: 'error', error: 'Invalid MemberId' })
+    if (mongoose.Types.ObjectId.isValid(created_by) === false){
+        return res.json({ status: 'error', error: 'Invalid User' })
     }
     try {
 		const response = await Task.create({
 			name,
 			level_of_priority,
             isCompleted,
-            members
+            created_by
 		})
 		console.log('Task created successfully: ', response)
         res.json({ status: 'ok' })
@@ -168,37 +168,6 @@ app.post('/api/create_task',async(req,res)=>{
 })
 
 // Update Task
-app.post('/api/task_update',async(req,res)=>{
-    const { id, members  } = req.body
-
-    try {
-		Task.findById(id, function(err, p) {
-            if (!p)
-              return next(new Error('Could not load Task'));
-            else {
-
-			  if (!p.members.includes(members)){
-				p.members.push(members)
-			  }
-
-              p.save(function(err) {
-                if (err){
-                    console.log('error')
-                    return res.json({ status: 'error', error: ';))' })
-                }
-                else{
-                    console.log("success")
-                    res.json({ status: 'ok' })
-                }
-              });
-            }
-          })
-	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: ';))' })
-	}
-})
-
 app.post('/api/status_update',async(req,res)=>{
     const { id, isCompleted} = req.body
 
@@ -210,6 +179,9 @@ app.post('/api/status_update',async(req,res)=>{
 
               if(p.isCompleted){
 				  p.isCompleted = false
+			  }
+			  else{
+				  p.isCompleted = true
 			  }
 
               p.save(function(err) {

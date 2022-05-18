@@ -6,7 +6,7 @@ const TaskSchema = new mongoose.Schema(
         level_of_priority: { type: Number, required:true},
         isCompleted: { type: Boolean, default: false},
         completionDate: { type: Date, default: Date.now() },
-        members: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+        created_by: { type: Schema.Types.ObjectId, ref: 'User' }
 	},
 	{ collection: 'tasks' }
 )
