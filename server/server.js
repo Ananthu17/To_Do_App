@@ -169,17 +169,47 @@ app.post('/api/create_task',async(req,res)=>{
 
 // Update Task
 app.post('/api/task_update',async(req,res)=>{
-    const { id,isCompleted, members  } = req.body
+    const { id, members  } = req.body
 
     try {
 		Task.findById(id, function(err, p) {
             if (!p)
               return next(new Error('Could not load Task'));
             else {
-              p.isCompleted = isCompleted;
 
 			  if (!p.members.includes(members)){
 				p.members.push(members)
+			  }
+
+              p.save(function(err) {
+                if (err){
+                    console.log('error')
+                    return res.json({ status: 'error', error: ';))' })
+                }
+                else{
+                    console.log("success")
+                    res.json({ status: 'ok' })
+                }
+              });
+            }
+          })
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: ';))' })
+	}
+})
+
+app.post('/api/status_update',async(req,res)=>{
+    const { id, isCompleted} = req.body
+
+    try {
+		Task.findById(id, function(err, p) {
+            if (!p)
+              return next(new Error('Could not load Task'));
+            else {
+
+              if(p.isCompleted){
+				  p.isCompleted = false
 			  }
 
               p.save(function(err) {
