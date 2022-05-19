@@ -6,7 +6,7 @@ const User = require('./model/user')
 const Task = require('./model/task')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
+var cors = require('cors')
 const JWT_SECRET = 'sdjkfh8923yhjdksbfma@#*(&@*!^#&@bhjb2qiuhesdbhjdsfg839ujkdhfjk'
 
 mongoose.connect('mongodb://localhost:27017/login-app-db', {
@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/login-app-db', {
 const app = express()
 app.use('/', express.static(path.join(__dirname, 'static')))
 app.use(bodyParser.json())
+app.use(cors())
 
 app.post('/api/change-password', async (req, res) => {
 	const { token, newpassword: plainTextPassword } = req.body
@@ -192,7 +193,7 @@ app.post('/api/status_update',async(req,res)=>{
                 }
                 else{
                     console.log("success")
-                    res.json({ status: 'ok' })
+                    res.json({ status: 'ok', data: p.isCompleted })
                 }
               });
             }
@@ -202,6 +203,21 @@ app.post('/api/status_update',async(req,res)=>{
 		res.json({ status: 'error', error: ';))' })
 	}
 })
+
+app.delete('/api/delete/:id', function(req, res) {
+		let id = req.param("id");
+		Task.remove({
+			_id: id
+		}, function(err){
+			if (err) {
+				console.log(err)
+				return res.json({ status: 'error', error: 'Unknown Id' })
+			}
+			else {
+			   return res.json({ status: 200, data:"Item removed" })
+			}
+		});
+});
 
 
 app.listen(9999, () => {

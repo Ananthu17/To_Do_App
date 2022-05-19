@@ -29,13 +29,24 @@ export class LoginComponent implements OnInit {
   attendance = {}
 
   onSubmit(data){
-    this.http.post('http://localhost:9999/api/login',data)
+    console.log(data)
+    this.http.post('http://34.227.27.35:9999/api/login',data)
     .subscribe((result)=>{
-      // localStorage.setItem('token',result.data)
-      this.router.navigate(['home']);
-      console.log(localStorage['token'])
+      console.log("nn",result)
+      if(result["status"]==="ok"){
+        localStorage.setItem('token',result["data"]["token"])
+        localStorage.setItem('user',result["data"]["user"])
+        this.toastr.success("Login Sucess..");
+        setTimeout(() => {
+          this.router.navigate(['home']);
+        }, 2000);
+      }
+      else{
+      this.toastr.error("Invalid username/password")
+      }
     },
     (error)=>{
+      console.log(error)
       this.toastr.error("Invalid Credentials");
     }
     )
@@ -43,8 +54,9 @@ export class LoginComponent implements OnInit {
 
   onSignup(data){
     console.log(data)
-    this.http.post('http://localhost:9999/api/register',data)
+    this.http.post('http://34.227.27.35:9999/api/register',data)
     .subscribe((result)=>{
+      console.log(result)
       this.toastr.success("Account created successfully");
       $('#card').removeClass('d-none')
       $('#card-signup').addClass('d-none')

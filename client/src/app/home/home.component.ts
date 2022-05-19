@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http"
 import { ToastrService } from 'ngx-toastr';
 import {LoginComponent} from '../login/login.component';
 import { Route,Router} from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
@@ -15,38 +16,32 @@ export class HomeComponent implements OnInit{
 
   // calling all chats when logged in 
   constructor(private http:HttpClient,private toastr: ToastrService,private loginComponent:LoginComponent,private router: Router) {
-      this.http.get('http://localhost:9999/api/tasks').subscribe(
-      (result) => {
-        console.log(result)
-        this.tasks = result
-        this.task_list = Object.keys(this.tasks).map((key) => this.tasks[key]);
-        console.log(this.task_list)
-      })
 
-      this.http.get('http://localhost:9999/api/members').subscribe(
-      (result) => {
-        console.log(result)
-        this.members = result
-        this.members_list = Object.keys(this.members).map((key) => this.members[key]);
-        console.log(this.members_list)
-      })
   }
 
   // initilaze socket
   ngOnInit(){
-
+    this.http.get('http://34.227.27.35:9999/api/tasks').subscribe(
+      (result) => {
+        console.log("Task :", result)
+        this.tasks = result
+        this.task_list = Object.keys(this.tasks).map((key) => this.tasks[key]);
+        console.log(this.task_list)
+      })
   }
   tasks = {}
   task_list = []
-  members = {}
   members_list = []
 
   onTask(data){
-    console.log("Ananthu", data)
-    this.http.post('http://localhost:9999/api/create_task',data)
+    console.log("Crete Task : ", data)
+    data["created_by"] = localStorage.getItem("user")
+    this.http.post('http://34.227.27.35:9999/api/create_task',data)
     .subscribe((result)=>{
       console.log(result)
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     },
     (error)=>{
       console.log(error)
@@ -55,13 +50,18 @@ export class HomeComponent implements OnInit{
     )
   }
 
-  onMemberAdd(data){
-    console.log(data)
-    this.http.post('http://localhost:9999/api/task_update',data)
+  showCheck(id){
+    this.http.post('http://34.227.27.35:9999/api/status_update', {"id":id, "isCompleted": true})
     .subscribe((result)=>{
-      console.log(result)
-      window.location.reload();
-      this.toastr.success("Task Updated Successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      if (result["data"]===true){
+        this.toastr.success("Task Finished, Good Job :)");
+      }
+      else{
+        this.toastr.info("Task Pending...");
+      }
     },
     (error)=>{
       console.log(error)
@@ -69,13 +69,13 @@ export class HomeComponent implements OnInit{
     )
   }
 
-  showCheck(id){
-    console.log(id)
-    this.http.post('http://localhost:9999/api/task_update',{"id":id, "isCompleted": true})
+  delete(id){
+    this.http.delete('http://34.227.27.35:9999/api/delete/'+id)
     .subscribe((result)=>{
-      console.log(result)
-      window.location.reload();
-      this.toastr.success("Task Finished");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      this.toastr.error("Task removed from list !");
     },
     (error)=>{
       console.log(error)
